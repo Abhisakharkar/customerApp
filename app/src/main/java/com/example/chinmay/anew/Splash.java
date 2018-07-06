@@ -26,12 +26,13 @@ public class Splash extends AppCompatActivity {
     private final int SPLASH_DISPLAY_LENGTH = 2500;
     private GpsTracker gpsTracker;
     double latitude,longitude;
-    Map<String, String> params;
-    String length;
-    String place;
-    JSONObject parameters;
+    private Map<String, String> params;
+     private String length;
+    private String place;
+    private JSONObject parameters;
     private RequestQueue requestQueue;
     private int flag;
+    private serverops s1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +56,7 @@ public class Splash extends AppCompatActivity {
             gpsTracker.showSettingsAlert();
         }
         String url ="http://ec2-18-222-137-50.us-east-2.compute.amazonaws.com:6868/get_location_ids";
-        requestQueue = Volley.newRequestQueue(this);
+
 
 // Request a string response from the provided URL.
 //        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
@@ -74,76 +75,27 @@ public class Splash extends AppCompatActivity {
 //            }
 //        });
         if(flag==1) {
-            JsonObjectRequest obreq = new JsonObjectRequest(Request.Method.POST, url, parameters,
-                    // The third parameter Listener overrides the method onResponse() and passes
-                    //JSONObject as a parameter
-                    new Response.Listener<JSONObject>() {
 
-                        // Takes the response from the JSON request
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            try {
-                                 length = response.getString("length");
+            s1=new serverops();
+            s1.req(url,parameters,this);
+            new Handler().postDelayed(new Runnable(){
+            @Override
+            public void run() {
+                /* Create an Intent that will start the Menu-Activity. */
+                Intent mainIntent = new Intent(Splash.this,MainActivity.class);
+                mainIntent.putExtra("place",serverops.place);
+                Splash.this.startActivity(mainIntent);
+                Splash.this.finish();
 
 
-                            JSONObject localityData = response.getJSONObject("localityData");
-                            String tier=localityData.getString("tier");
-                            if(tier.equals("0"))
-                            {
-                                 place= localityData.getString("locality");
-                            }
-                            else {
-                                JSONObject subLocality1Data = localityData.getJSONObject("subLocality1Data");
-                                String tier1=subLocality1Data.getString("tier");
-                                if(tier1.equals("0"))
-                                {
-                                     place= subLocality1Data.getString("subLocality1");
-                                }
-                                else
-                                {
-                                    JSONObject subLocality2Data = localityData.getJSONObject("subLocality2Data");
-                                    String tier2=subLocality2Data.getString("tier");
-                                    if(tier2.equals("0"))
-                                    {
-                                        place= subLocality2Data.getString("subLocality2");
-                                    }
-                                }
-                            }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                            Intent mainIntent = new Intent(Splash.this,MainActivity.class);
-                            mainIntent.putExtra("place",place);
-                            Splash.this.startActivity(mainIntent);
-                            Splash.this.finish();
+            }
+        }, SPLASH_DISPLAY_LENGTH);
 
-                        }
-                    },
-                    // The final parameter overrides the method onErrorResponse() and passes VolleyError
-                    //as a parameter
-                    new Response.ErrorListener() {
-                        @Override
-                        // Handles errors that occur due to Volley
-                        public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(Splash.this, "", Toast.LENGTH_SHORT).show();
-                            Log.e("Volley", "Error");
-                        }
-                    }
-//        @Override
-//            public byte[] getBody()  {
-//                HashMap<String, String> params2 = new HashMap<String, String>();
-//                params2.put("latloc", ""+latitude);
-//                params2.put("longloc", ""+longitude);
-//                return new JSONObject(params2).toString().getBytes();
-//            }
-//
-//            @Override
-//            public String getBodyContentType() {
-//                return "application/json";
-//            }
-            );
-            // Adds the JSON object request "obreq" to the request queue
-            requestQueue.add(obreq);
+
+                                                          /* Create an Intent that will start the Menu-Activity. */
+
+
+
         }
 
 
@@ -166,13 +118,7 @@ public class Splash extends AppCompatActivity {
 
 
 
-//        new Handler().postDelayed(new Runnable(){
-//            @Override
-//            public void run() {
-//                /* Create an Intent that will start the Menu-Activity. */
 //
-//            }
-//        }, SPLASH_DISPLAY_LENGTH);
 
     }
 }

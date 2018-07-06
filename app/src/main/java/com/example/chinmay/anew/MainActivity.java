@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private GpsTracker gpsTracker;
-    String place;
+    private String place;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
