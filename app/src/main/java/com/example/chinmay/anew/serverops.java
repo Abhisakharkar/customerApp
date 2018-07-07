@@ -16,83 +16,101 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+
 public class serverops {
     private String length;
     private RequestQueue requestQueue;
     private int flag=0;
-    static String place;
+    private static String place;
+    private GpsTracker gpsTracker;
+    private double latitude;
+    private double longitude;
+    private int count=0;
+    private HashMap params;
+    private JSONObject parameters;
+    private Context context;
+    private String locationURL="http://ec2-18-222-137-50.us-east-2.compute.amazonaws.com:6868/get_location_ids";
 
 
 
-    void req(String url, JSONObject parameters, final Context ctx) {
-
-       requestQueue = Volley.newRequestQueue(ctx);
-
-        JsonObjectRequest obreq = new JsonObjectRequest(Request.Method.POST, url, parameters,
-                // The third parameter Listener overrides the method onResponse() and passes
-                //JSONObject as a parameter
-                new Response.Listener<JSONObject>() {
-
-                    // Takes the response from the JSON request
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            length = response.getString("length");
+    serverops(Context ctx){
 
 
-                            JSONObject localityData = response.getJSONObject("localityData");
-                            String tier=localityData.getString("tier");
-                            if(tier.equals("0"))
-                            {
+        context=ctx;
+
+    }
+
+    String getLocation()
+    {
+        return place;
+    }
 
 
-                                place= localityData.getString("locality");
-                                flag=1;
-                            }
-                            else {
-                                JSONObject subLocality1Data = localityData.getJSONObject("subLocality1Data");
-                                String tier1=subLocality1Data.getString("tier");
-                                if(tier1.equals("0"))
-                                {
-                                    place= subLocality1Data.getString("subLocality1");
-                                    flag=1;
-                                }
-                                else
-                                {
-                                    JSONObject subLocality2Data = localityData.getJSONObject("subLocality2Data");
-                                    String tier2=subLocality2Data.getString("tier");
-                                    if(tier2.equals("0"))
-                                    {
-                                        place= subLocality2Data.getString("subLocality2");
-                                        flag=1;
-                                    }
-                                }
+    void requestServerLocation() {
+        getLocationParameters();
 
-                            }
+       requestQueue = Volley.newRequestQueue(context);
+       if(parameters!=null) {
 
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+           JsonObjectRequest obreq = new JsonObjectRequest(Request.Method.POST, locationURL, parameters,
+                   // The third parameter Listener overrides the method onResponse() and passes
+                   //JSONObject as a parameter
+                   new Response.Listener<JSONObject>() {
+
+                       // Takes the response from the JSON request
+                       @Override
+                       public void onResponse(JSONObject response) {
+                           try {
+                               length = response.getString("length");
 
 
+                               JSONObject localityData = response.getJSONObject("localityData");
+                               String tier = localityData.getString("tier");
+                               if (tier.equals("0")) {
 
-                    }
-                },
-                // The final parameter overrides the method onErrorResponse() and passes VolleyError
-                //as a parameter
-                new Response.ErrorListener() {
-                    @Override
-                    // Handles errors that occur due to Volley
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(ctx, "", Toast.LENGTH_SHORT).show();
-                        Log.e("Volley", "Error");
-                    }
-                }
+
+                                   place = localityData.getString("locality");
+                                   flag = 1;
+                               } else {
+                                   JSONObject subLocality1Data = localityData.getJSONObject("subLocality1Data");
+                                   String tier1 = subLocality1Data.getString("tier");
+                                   if (tier1.equals("0")) {
+                                       place = subLocality1Data.getString("subLocality1");
+                                       flag = 1;
+                                   } else {
+                                       JSONObject subLocality2Data = localityData.getJSONObject("subLocality2Data");
+                                       String tier2 = subLocality2Data.getString("tier");
+                                       if (tier2.equals("0")) {
+                                           place = subLocality2Data.getString("subLocality2");
+                                           flag = 1;
+                                       }
+                                   }
+
+                               }
+
+                           } catch (JSONException e) {
+                               e.printStackTrace();
+                           }
+
+
+                       }
+                   },
+                   // The final parameter overrides the method onErrorResponse() and passes VolleyError
+                   //as a parameter
+                   new Response.ErrorListener() {
+                       @Override
+                       // Handles errors that occur due to Volley
+                       public void onErrorResponse(VolleyError error) {
+                           Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
+                           Log.e("Volley", "Error");
+                       }
+                   }
 //
 //            }
-        );
-        // Adds the JSON object request "obreq" to the request queue
-        requestQueue.add(obreq);
+           );
+           // Adds the JSON object request "obreq" to the request queue
+           requestQueue.add(obreq);
 //        new Handler().postDelayed(new Runnable(){
 //            @Override
 //            public void run() {
@@ -100,6 +118,37 @@ public class serverops {
 //
 //            }
 //        }, 2000);
+
+
+       }
+       else
+       {
+           getLocationParameters();
+       }
+    }
+    public void getLocationParameters()
+    {
+        gpsTracker = new GpsTracker(context);
+        if(gpsTracker.canGetLocation())
+        {
+            latitude = gpsTracker.getLatitude();
+            longitude = gpsTracker.getLongitude();
+            params = new HashMap();
+            params.put("latloc", ""+latitude);
+            params.put("longloc", ""+longitude);
+            parameters = new JSONObject(params);
+        }else{
+            gpsTracker.showSettingsAlert();
+//            count++;
+//            if(count<2)
+//            getLocationParameters();
+
+
+        }
+
+
+
+
 
     }
 
