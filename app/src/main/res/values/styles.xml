@@ -9,7 +9,7 @@
     </style>
 
         <style name="HeaderBar">
-            <item name="android:background">@color/colorPrimary</item>
+            <item name="android:background">#fdfdfd</item>
         </style>
 
 

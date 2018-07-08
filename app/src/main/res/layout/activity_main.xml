@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ffffff"
     tools:context=".MainActivity">
 
     <android.support.v7.widget.Toolbar
@@ -14,5 +15,27 @@
 
         android:elevation="4dp"
         />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="28dp"
+        android:layout_below="@+id/my_toolbar"
+        android:text="Retailers Near Me"
+        android:gravity="center"
+        android:textColor="#aaaaaa"
+        android:textSize="16sp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:id="@+id/retail"/>
 
-</android.support.constraint.ConstraintLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/my_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="#ebeaea"
+        android:dividerHeight="9dp"
+        android:scrollbars="vertical"
+        android:layout_marginTop="2dp"
+        android:layout_below="@+id/retail"
+        android:layout_alignParentStart="true" />
+
+</RelativeLayout>

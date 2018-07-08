@@ -38,7 +38,7 @@ public class Splash extends AppCompatActivity {
     private JSONObject parameters;
     private RequestQueue requestQueue;
     private int flag;
-    private serverops s1;
+    private ServerOp s1;
 
 
     @Override
@@ -142,9 +142,10 @@ public class Splash extends AppCompatActivity {
 
     private void CallActivity() {
 
-        s1=new serverops(this);
+        s1=new ServerOp(this);
         //Creating the object for server
         s1.requestServerLocation();
+
 
 
         final Handler handler = new Handler();
@@ -154,6 +155,8 @@ public class Splash extends AppCompatActivity {
 
                 Intent mainIntent = new Intent(Splash.this,MainActivity.class);
                 mainIntent.putExtra("place",s1.getLocation());
+
+
                 Splash.this.startActivity(mainIntent);
                 Splash.this.finish();
 
