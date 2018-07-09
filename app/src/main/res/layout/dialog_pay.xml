@@ -1,0 +1,43 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="290dp"
+    android:background="#648ab4"
+    android:layout_height="100dp">
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textColor="#fcfcfc"
+    android:layout_margin="10dp"
+    android:id="@+id/text"
+    android:text="Did we get your location right?"
+    android:textStyle="bold"
+    android:textSize="15sp"
+    android:layout_gravity="center"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:id="@+id/yes"
+        android:layout_below="@+id/text"
+        android:textColor="#ecebeb"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:background="#527baf"
+        android:text="Yes"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_toRightOf="@+id/yes"
+        android:textColor="#ecebeb"
+        android:id="@+id/change"
+        android:textSize="13sp"
+        android:layout_below="@+id/text"
+        android:layout_alignParentRight="true"
+        android:textStyle="bold"
+        android:background="#547eb4"
+        android:text="Change Location"/>
+
+
+
+</RelativeLayout>

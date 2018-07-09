@@ -1,13 +1,18 @@
 package com.example.chinmay.anew;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -28,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private String place;
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
+    android.support.v7.app.AlertDialog d;
     private MyAdapter madapter;
 
     @Override
@@ -46,7 +52,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(place);
+        if(place==null)
+        {
+            actionBar.setTitle("Not Available");
+        }
+        else
+        {
+            actionBar.setTitle(place);
+        }
+
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setItemViewCacheSize(20);
@@ -75,6 +89,48 @@ public class MainActivity extends AppCompatActivity {
 
                 })
         );
+
+
+
+        final android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+
+        // Get the layout inflater
+        LayoutInflater inflater = this.getLayoutInflater();
+        final View prompt = inflater.inflate(R.layout.dialog_pay, null);
+
+
+        // Inflate and set the layout for the dialog
+        // Pass null as the parent view because its going in the dialog layout
+        builder.setView(prompt);
+        Button yes=(Button)prompt.findViewById(R.id.yes);
+        Button change=(Button)prompt.findViewById(R.id.change);
+
+        yes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "YES", Toast.LENGTH_SHORT).show();
+                d.cancel();
+
+            }
+        });
+        change.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "Change", Toast.LENGTH_SHORT).show();
+                d.cancel();
+            }
+        });
+
+         d=builder.create();
+
+        d.show();
+
+//        Button pbutton = d.getButton(DialogInterface.BUTTON_POSITIVE);
+//        pbutton.setBackgroundColor(Color.parseColor("#000000"));
+
+
+
+
 
 
 // Add the request to the RequestQueue.
