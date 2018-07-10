@@ -33,9 +33,10 @@ public class ServerOp {
     private HashMap params;
     private JSONObject locationParameters,retailerParameters;
     private Context context;
-    private String locationURL="http://ec2-18-222-137-50.us-east-2.compute.amazonaws.com:6868/get_location_ids";
-    private String RetailersURL="http://ec2-18-222-137-50.us-east-2.compute.amazonaws.com:6868/get_retailers_near_me";
-    private String photoUrl="http://ec2-18-222-137-50.us-east-2.compute.amazonaws.com/rt";
+    private String locationURL="http://ec2-18-220-165-73.us-east-2.compute.amazonaws.com:6868/get_location_ids";
+    private String RetailersURL="http://ec2-18-220-165-73.us-east-2.compute.amazonaws.com:6868/get_retailers_near_me";
+    private String photoUrl="http://ec2-18-220-165-73.us-east-2.compute.amazonaws.com/rt";
+
     private String subLocality1Id;
 
 

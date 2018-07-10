@@ -19,7 +19,7 @@ import java.util.ArrayList;
  * Created by Chinmay on 21-03-2018.
  */
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
+public class MyAdapterRecyclerMainAc extends RecyclerView.Adapter<MyAdapterRecyclerMainAc.MyViewHolder> {
 
 
 
@@ -27,7 +27,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     private Context context;
 
 
-    public MyAdapter(Context contxt) {
+    public MyAdapterRecyclerMainAc(Context contxt) {
 
         context=contxt;
 
@@ -47,7 +47,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 //    }
 
     @Override
-    public MyAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MyAdapterRecyclerMainAc.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.rowlayout, parent, false);
 
 

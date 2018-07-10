@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
     android.support.v7.app.AlertDialog d;
-    private MyAdapter madapter;
+    private MyAdapterRecyclerMainAc madapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +62,12 @@ public class MainActivity extends AppCompatActivity {
         {
             actionBar.setTitle(place);
         }
+        toolbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this,SearchLocation.class));
+            }
+        });
 
 
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
@@ -74,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.addItemDecoration(new VerticalSpaceItemDecoration(0));
         mRecyclerView.addItemDecoration(new DividerItemDecoration(MainActivity.this, R.drawable.divider));
-        madapter = new MyAdapter(this);
+        madapter = new MyAdapterRecyclerMainAc(this);
         showTooltip(R.id.my_toolbar, Gravity.BOTTOM);
         mRecyclerView.setAdapter(madapter);
         mRecyclerView.addOnItemTouchListener(
