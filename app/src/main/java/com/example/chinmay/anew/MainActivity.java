@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,SearchLocation.class));
+                startActivity(new Intent(MainActivity.this,SearchPlace.class));
             }
         });
 
