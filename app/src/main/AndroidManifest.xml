@@ -26,7 +26,21 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAowVUp48_0XbCjKY2O1YMHf65-yN3dVPk" />
 
-        <activity android:name=".SearchPlace"></activity>
+        <activity android:name=".SearchPlace">
+            <intent-filter>
+
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".MapActivity2">
+            <intent-filter>
+
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+        </activity>
     </application>
 
 </manifest>

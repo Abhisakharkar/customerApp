@@ -1,12 +1,24 @@
 package com.example.chinmay.anew;
 
+import com.google.android.gms.maps.model.LatLng;
+
 public class MyGooglePlaces {
     private String name;
     private String category;
     private String rating;
     private String opennow;
+    private LatLng lng;
     private String vicinity;
     private String address;
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
     private double latitude,longitude;
     public MyGooglePlaces()
     {
@@ -46,11 +58,6 @@ public class MyGooglePlaces {
     public void setVicinity(String vicinity) {
         this.vicinity = vicinity;
     }
-    public void setLatLng(double lat,double lon)
-    {
-        this.latitude=lat;
-        this.longitude=lon;
-    }
 
     public String getAddress() {
         return address;
@@ -58,5 +65,13 @@ public class MyGooglePlaces {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 }

@@ -36,10 +36,20 @@ class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements Filterab
         return resultList.size();
     }
 
+//    @Override
+//    public String getItem(int position) {
+//        return resultList.get(position).getAddress();
+//    }
+//
     @Override
     public String getItem(int position) {
         return resultList.get(position).getAddress();
     }
+
+    public MyGooglePlaces getSelectedItem1(int position) {
+        return resultList.get(position);
+    }
+
 
     @Override
     public Filter getFilter() {
@@ -92,7 +102,7 @@ class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements Filterab
             holder = (MyViewHolder) convertView.getTag();
         }
         // If weren't re-ordering this you could rely on what you set last time
-        if(resultList.size()>0) {
+        if(resultList.size()>position) {
             holder.text.setText(Html.fromHtml("<b>" + resultList.get(position).getName() + "<b>"));
             holder.address.setText(resultList.get(position).getAddress());
         }
