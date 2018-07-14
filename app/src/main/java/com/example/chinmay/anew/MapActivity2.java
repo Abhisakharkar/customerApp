@@ -155,7 +155,7 @@ public class MapActivity2 extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
 
         //Initialize Google Play Services

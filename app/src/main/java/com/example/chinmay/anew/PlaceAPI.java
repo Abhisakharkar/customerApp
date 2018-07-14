@@ -28,7 +28,7 @@ public class PlaceAPI {
     private ArrayList<MyGooglePlaces> temp;
     private Context context;
 
-    private static final String API_KEY = "AIzaSyB9Zgb6Uw_WP5C1xYgmacF0Ce_2zlmUW20";
+    private static final String API_KEY = "AIzaSyB2t4PAMR5gqD--qzc3_33P1jG1rs6mC-g";
     private GpsTracker gpsTracker;
     private double currentLatitude,currentLongitude;
 
