@@ -58,7 +58,7 @@ class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements Filterab
             protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults filterResults = new FilterResults();
                 if (constraint != null) {
-                    resultList = mPlaceAPI.autocomplete(constraint.toString());
+                    resultList = mPlaceAPI.autocomplete(constraint.toString(),mContext);
 
                     filterResults.values = resultList;
                     filterResults.count = resultList.size();

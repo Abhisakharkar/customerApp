@@ -58,7 +58,9 @@ public class SearchPlace extends AppCompatActivity {
                 Intent i =new Intent(SearchPlace.this,MapActivity2.class);
                 i.putExtra("lat",lat);
                 i.putExtra("long",longi);
-                startActivity(new Intent());
+
+                startActivityForResult(i,3);
+
 
             }
         });
@@ -94,5 +96,17 @@ public class SearchPlace extends AppCompatActivity {
                 })
         );
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        {
+            if(requestCode==3)
+            {
+                setResult(3,data);
+                finish();
+            }
+        }
     }
 }

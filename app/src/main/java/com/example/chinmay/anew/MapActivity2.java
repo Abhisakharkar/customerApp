@@ -69,26 +69,29 @@ public class MapActivity2 extends FragmentActivity implements OnMapReadyCallback
         set.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i=new Intent(MapActivity2.this,MainActivity.class);
+
+
+                Intent i=new Intent();
 
 
                 if(flag==0)
                 {
-                    i.putExtra("latitude"," "+clicked.latitude);
-                    i.putExtra("longitude"," "+clicked.longitude);
+                    i.putExtra("latitude",clicked.latitude);
+                    i.putExtra("longitude",clicked.longitude);
 
-                    startActivity(i);
+
 
                     Toast.makeText(MapActivity2.this, "Clicked", Toast.LENGTH_SHORT).show();
                 }
                 else
                 {
-                    i.putExtra("latitude",""+curr.latitude);
-                    i.putExtra("longitude",""+curr.longitude);
+                    i.putExtra("latitude",curr.latitude);
+                    i.putExtra("longitude",curr.longitude);
 
-                    startActivity(i);
+
                     Toast.makeText(MapActivity2.this, "Current", Toast.LENGTH_SHORT).show();
                 }
+                setResult(3,i);
                 finish();
 
 

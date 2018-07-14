@@ -74,7 +74,7 @@ public class ServerOp {
                             try {
 
 
-
+                                retailersArray.clear();
                                 JSONArray retailersObject = response.getJSONArray("retailers");
                                 for (int i = 0; i < retailersObject.length(); i++) {
                                     JSONObject jsonobject = retailersObject.getJSONObject(i);
@@ -225,6 +225,85 @@ public class ServerOp {
             locationParameters = new JSONObject(params);
         }else{
             gpsTracker.showSettingsAlert();
+        }
+    }
+
+    void requestServerLocationWithParameters(Double lat,Double longi) {
+        requestQueue = Volley.newRequestQueue(context);
+
+        params = new HashMap();
+        params.put("latloc", ""+lat);
+        params.put("longloc", ""+longi);
+        locationParameters = new JSONObject(params);
+
+        if(locationParameters!=null) {
+
+            JsonObjectRequest obreq = new JsonObjectRequest(Request.Method.POST, locationURL, locationParameters,
+                    // The third parameter Listener overrides the method onResponse() and passes
+                    //JSONObject as a parameter
+                    new Response.Listener<JSONObject>() {
+
+                        // Takes the response from the JSON request
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                length = response.getString("length");
+
+
+                                JSONObject localityData = response.getJSONObject("localityData");
+                                localityId=localityData.getString("localityId");
+                                localityTier = localityData.getString("tier");
+                                requestServerRetailers();
+                                if (localityTier.equals("0")) {
+
+
+                                    place = localityData.getString("locality");
+                                    flag = 1;
+                                } else {
+                                    JSONObject subLocality1Data = localityData.getJSONObject("subLocality1Data");
+                                    subLocality1Id=response.getString("localityId");
+                                    String tier1 = subLocality1Data.getString("tier");
+                                    if (tier1.equals("0")) {
+                                        place = subLocality1Data.getString("subLocality1");
+                                        flag = 1;
+                                    } else {
+                                        JSONObject subLocality2Data = localityData.getJSONObject("subLocality2Data");
+                                        String tier2 = subLocality2Data.getString("tier");
+                                        if (tier2.equals("0")) {
+                                            place = subLocality2Data.getString("subLocality2");
+                                            flag = 1;
+                                        }
+                                    }
+
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+
+                        }
+                    },
+                    // The final parameter overrides the method onErrorResponse() and passes VolleyError
+                    //as a parameter
+                    new Response.ErrorListener() {
+                        @Override
+                        // Handles errors that occur due to Volley
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
+                            Log.e("Volley", "Error");
+                        }
+                    }
+//
+//            }
+            );
+            // Adds the JSON object request "obreq" to the request queue
+            requestQueue.add(obreq);
+//
+        }
+        else
+        {
+            getLocationParameters();
         }
     }
 

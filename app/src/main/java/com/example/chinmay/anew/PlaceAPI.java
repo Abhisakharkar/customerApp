@@ -1,6 +1,9 @@
 package com.example.chinmay.anew;
 
+import android.content.Context;
 import android.util.Log;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,6 +16,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class PlaceAPI {
 
@@ -22,11 +26,15 @@ public class PlaceAPI {
     private static final String TYPE_AUTOCOMPLETE = "/autocomplete";
     private static final String OUT_JSON = "/json";
     private ArrayList<MyGooglePlaces> temp;
+    private Context context;
 
     private static final String API_KEY = "AIzaSyB9Zgb6Uw_WP5C1xYgmacF0Ce_2zlmUW20";
+    private GpsTracker gpsTracker;
+    private double currentLatitude,currentLongitude;
 
-    public ArrayList<MyGooglePlaces> autocomplete (String input) {
+    public ArrayList<MyGooglePlaces> autocomplete (String input, Context ctx) {
         ArrayList<MyGooglePlaces> resultList = null;
+        context=ctx;
 
         HttpURLConnection conn = null;
         StringBuilder jsonResults = new StringBuilder();
@@ -37,7 +45,9 @@ public class PlaceAPI {
             sb.append("?key=" + API_KEY);
             sb.append("&types=(cities)");
             sb.append("&input=" + URLEncoder.encode(input, "utf8"));
-            String url1= "https://maps.googleapis.com/maps/api/place/textsearch/json?query="+input+"&location=21.1458,79.25&radius=10000&key=AIzaSyB9Zgb6Uw_WP5C1xYgmacF0Ce_2zlmUW20";
+            LatLng latlong=getPosition();
+
+            String url1= "https://maps.googleapis.com/maps/api/place/textsearch/json?query="+input+"&location="+latlong.latitude+","+latlong.longitude+"&radius=10000&key=AIzaSyB9Zgb6Uw_WP5C1xYgmacF0Ce_2zlmUW20";
 
 
             URL url = new URL(url1);
@@ -122,5 +132,22 @@ public class PlaceAPI {
             return new ArrayList<>();
         }
         return temp;
+    }
+
+    public LatLng getPosition() {
+        LatLng lng;
+        lng=new LatLng(79,21); // Default
+
+        gpsTracker = new GpsTracker(context);
+        if(gpsTracker.canGetLocation())
+        {
+            currentLatitude = gpsTracker.getLatitude();
+            currentLongitude = gpsTracker.getLongitude();
+
+             lng=new LatLng(currentLatitude,currentLongitude);
+        }else{
+            gpsTracker.showSettingsAlert();
+        }
+        return lng;
     }
 }

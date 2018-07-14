@@ -1,8 +1,10 @@
 package com.example.chinmay.anew;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,11 +34,15 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private ArrayList<retailers> retailersArray;
     private GpsTracker gpsTracker;
+    private ActionBar actionBar;
     private String place;
+    private int from_map=1;
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
     android.support.v7.app.AlertDialog d;
     private MyAdapterRecyclerMainAc madapter;
+    private ProgressDialog prdialog;
+    private ServerOp s1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        ActionBar actionBar = getSupportActionBar();
+        actionBar = getSupportActionBar();
         if(place==null)
         {
             actionBar.setTitle("Not Available");
@@ -68,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                 Intent i=new Intent(MainActivity.this,SearchPlace.class);
-                startActivity(i);
+                startActivityForResult(i,from_map);
             }
         });
 
@@ -99,6 +105,54 @@ public class MainActivity extends AppCompatActivity {
 
                 })
         );
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==from_map)
+        {
+            prdialog = new ProgressDialog(this);
+            prdialog.setTitle("Loading");
+            prdialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            prdialog.setCancelable(false);
+            prdialog.show();
+            s1=new ServerOp(this);
+            //Creating the object for server
+            s1.requestServerLocationWithParameters(data.getDoubleExtra("latitude",79),data.getDoubleExtra("longitude",21));
+
+
+
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    String s=s1.getLocation();
+
+                    if(s==null)
+                    {
+                        actionBar.setTitle("Not Available");
+                    }
+                    else {
+                        actionBar.setTitle(s);
+                    }
+                    mRecyclerView.setAdapter(madapter);
+                    prdialog.cancel();
+
+
+
+
+
+
+
+                }
+
+            },2500);
+
+        }
+
+
 
     }
 
