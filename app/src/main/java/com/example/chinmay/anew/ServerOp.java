@@ -1,5 +1,6 @@
 package com.example.chinmay.anew;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
@@ -12,6 +13,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.load.engine.Resource;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,8 +35,8 @@ public class ServerOp {
     private HashMap params;
     private JSONObject locationParameters,retailerParameters;
     private Context context;
-    private String locationURL="http://ec2-18-220-165-73.us-east-2.compute.amazonaws.com:6868/get_location_ids";
-    private String RetailersURL="http://ec2-18-220-165-73.us-east-2.compute.amazonaws.com:6868/get_retailers_near_me";
+    private String locationURL="http://ec2-13-58-16-206.us-east-2.compute.amazonaws.com:6868/get_location_ids";
+    private String RetailersURL="http://ec2-13-58-16-206.us-east-2.compute.amazonaws.com:6868/get_retailers_near_me";
     private String photoUrl="http://ec2-18-220-165-73.us-east-2.compute.amazonaws.com/rt";
 
     private String subLocality1Id;
@@ -45,6 +47,7 @@ public class ServerOp {
         retailersArray=new ArrayList<>();
 
         context=ctx;
+
 
 
     }
@@ -144,7 +147,7 @@ public class ServerOp {
 
        if(locationParameters!=null) {
 
-           JsonObjectRequest obreq = new JsonObjectRequest(Request.Method.POST, locationURL, locationParameters,
+           JsonObjectRequest obreq = new JsonObjectRequest(Request.Method.POST,locationURL , locationParameters,
                    // The third parameter Listener overrides the method onResponse() and passes
                    //JSONObject as a parameter
                    new Response.Listener<JSONObject>() {

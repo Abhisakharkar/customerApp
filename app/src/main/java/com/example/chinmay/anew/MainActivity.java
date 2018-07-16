@@ -5,14 +5,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.design.widget.BottomNavigationView;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -106,6 +109,9 @@ public class MainActivity extends AppCompatActivity {
                 })
         );
 
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
     }
 
     @Override
@@ -167,6 +173,31 @@ public class MainActivity extends AppCompatActivity {
                 .setBackgroundColor(Color.parseColor("#648ab4"))
                 .setTextSize(20f).show();
     }
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.navigation_nearme:
+
+                    return true;
+                case R.id.navigation_categories:
+
+                    return true;
+                case R.id.navigation_cart:
+
+                    return true;
+                case R.id.navigation_account:
+
+                    return true;
+
+
+            }
+            return false;
+        }
+
+    };
 }
 
 

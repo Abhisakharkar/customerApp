@@ -66,7 +66,8 @@ public class MyAdapterRecyclerMainAc extends RecyclerView.Adapter<MyAdapterRecyc
 
 
         holder.enterpriseName.setText(retailersArray.get(position).getEnterpriseName());
-        String url = "http://ec2-18-222-137-50.us-east-2.compute.amazonaws.com/rt/" + retailersArray.get(position).getShopPhoto();
+
+        String url = "http://ec2-13-58-16-206.us-east-2.compute.amazonaws.com/rt/" + retailersArray.get(position).getShopPhoto();
         if (!url.equals("0") && !url.isEmpty()){
             Glide.with(context)
                     .load(url)
@@ -79,6 +80,7 @@ public class MyAdapterRecyclerMainAc extends RecyclerView.Adapter<MyAdapterRecyc
     @Override
     public int getItemCount() {
         return retailersArray.size();
+
 
         //This will be changed later
     }

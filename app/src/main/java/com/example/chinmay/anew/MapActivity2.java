@@ -26,6 +26,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -133,6 +134,7 @@ public class MapActivity2 extends FragmentActivity implements OnMapReadyCallback
         saved.position(savedposition);
         saved.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
         mMap.addMarker(saved);
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(savedposition,12));
         clicked=savedposition;
         flag=0;
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -309,6 +311,15 @@ public class MapActivity2 extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+    @Override
+    public void onBackPressed()
+    {
+        Intent i=new Intent();
+        i.putExtra("latitude",curr.latitude);
+        i.putExtra("longitude",curr.longitude);
+        setResult(3,i);
+        finish();
     }
     @Override
     public void onPause() {

@@ -25,6 +25,7 @@ public class SearchPlace extends AppCompatActivity {
     private LinearLayoutManager mLayoutManager;
     private MyAdapterRecyclerSavedPlaces madapter;
     private PlacesAutoCompleteAdapter PlacesAdapter;
+    private GpsTracker gpsTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,7 @@ public class SearchPlace extends AppCompatActivity {
                 countOfKeys = sharedpreferences.getInt("count", 0);
                 MyGooglePlaces myplace= PlacesAdapter.getSelectedItem1(position);
                 countOfKeys++;
+
                 editor.putString("key"+countOfKeys,description );
                 editor.putInt("count",countOfKeys );    //Adding the search results in the RecyclerView/SHared preference
                 locations.add(description);
@@ -87,6 +89,7 @@ public class SearchPlace extends AppCompatActivity {
                 new RecyclerItemClickListener(this, savedPlacesRecyView ,new RecyclerItemClickListener.OnItemClickListener() {
                     @Override public void onItemClick(View view, int position) {
                         // do whatever
+                     //   String description=locations.get(position);
 
                     }
 
@@ -109,4 +112,26 @@ public class SearchPlace extends AppCompatActivity {
             }
         }
     }
+    @Override
+    public void onBackPressed()
+    {
+        LatLng lng;
+        lng=new LatLng(79,21); // Default
+
+        gpsTracker = new GpsTracker(this);
+        if(gpsTracker.canGetLocation())
+        {
+            Intent i=new Intent();
+
+            i.putExtra("latitude",gpsTracker.getLatitude());
+            i.putExtra("longitude",gpsTracker.getLongitude());
+
+
+            setResult(3,i);
+            finish();
+        }else{
+            gpsTracker.showSettingsAlert();
+        }
+    }
+
 }
