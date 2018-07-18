@@ -59,6 +59,10 @@ public class MyAdapterRecyclerMainAc extends RecyclerView.Adapter<MyAdapterRecyc
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
+        if(retailersArray.size()==0)
+        {
+            holder.retail.setText("No retailers found near you");
+        }
 
 
 
@@ -72,6 +76,10 @@ public class MyAdapterRecyclerMainAc extends RecyclerView.Adapter<MyAdapterRecyc
             Glide.with(context)
                     .load(url)
                     .into(holder.img1);
+        }
+        else
+        {
+           // holder.img1.setImageBitmap();
         }
 
 
@@ -91,7 +99,7 @@ public class MyAdapterRecyclerMainAc extends RecyclerView.Adapter<MyAdapterRecyc
         public TextView timeToReach;
         public ImageView img1;
         public TextView enterpriseName;
-        public TextView directions;
+        public TextView retail;
 
 
         public MyViewHolder(View v) {
@@ -99,6 +107,11 @@ public class MyAdapterRecyclerMainAc extends RecyclerView.Adapter<MyAdapterRecyc
             enterpriseName = (TextView) v.findViewById(R.id.name);
             timeToReach = (TextView) v.findViewById(R.id.time);
             img1=(ImageView)v.findViewById(R.id.image);
+            retail=(TextView)v.findViewById(R.id.retail);
+            if(retailersArray.size()==0)
+            {
+                retail.setText("No retailers found near you");
+            }
 
 
 

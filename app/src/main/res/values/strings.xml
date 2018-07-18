@@ -3,4 +3,12 @@
     <string name="locationURL">http://ec2-13-58-16-206.us-east-2.compute.amazonaws.com:6868/get_location_ids</string>
     <string name="retailerURL">http://ec2-13-58-16-206.us-east-2.compute.amazonaws.com:6868/get_retailers_near_me</string>
     <string name="photoURL">"http://ec2-13-58-16-206.us-east-2.compute.amazonaws.com/rt"</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
 </resources>

@@ -1,11 +1,13 @@
 package com.example.chinmay.anew;
 
+
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.design.widget.BottomNavigationView;
@@ -19,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -46,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private MyAdapterRecyclerMainAc madapter;
     private ProgressDialog prdialog;
     private ServerOp s1;
+    private TextView retail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         retailersArray=new ArrayList<>();
         Bundle b=getIntent().getExtras();
+
 
         if(b!=null)
         {
@@ -71,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         {
             actionBar.setTitle(place);
         }
+        loadFragment(new RetailerListFragment());
         toolbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,37 +88,51 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setItemViewCacheSize(20);
-        mRecyclerView.setDrawingCacheEnabled(true);
-        mRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-        mLayoutManager = new LinearLayoutManager(this);
-        //mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.addItemDecoration(new VerticalSpaceItemDecoration(0));
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(MainActivity.this, R.drawable.divider));
-        madapter = new MyAdapterRecyclerMainAc(this);
+//        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+//        mRecyclerView.setHasFixedSize(true);
+//        mRecyclerView.setItemViewCacheSize(20);
+//        mRecyclerView.setDrawingCacheEnabled(true);
+//        mRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+//        mLayoutManager = new LinearLayoutManager(this);
+//        mLayoutManager = new LinearLayoutManager(this);
+//        mRecyclerView.setLayoutManager(mLayoutManager);
+//        mRecyclerView.addItemDecoration(new VerticalSpaceItemDecoration(0));
+//        mRecyclerView.addItemDecoration(new DividerItemDecoration(MainActivity.this, R.drawable.divider));
+//        madapter = new MyAdapterRecyclerMainAc(this);
         showTooltip(R.id.my_toolbar, Gravity.BOTTOM);
-        mRecyclerView.setAdapter(madapter);
-        mRecyclerView.addOnItemTouchListener(
-                new RecyclerItemClickListener(this, mRecyclerView ,new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override public void onItemClick(View view, int position) {
-                        // do whatever
-
-                    }
-
-                    @Override
-                    public void onLongItemClick(View view, int position) {
-                    }
-
-                })
-        );
+//        mRecyclerView.setAdapter(madapter);
+//        mRecyclerView.addOnItemTouchListener(
+//                new RecyclerItemClickListener(this, mRecyclerView ,new RecyclerItemClickListener.OnItemClickListener() {
+//                    @Override public void onItemClick(View view, int position) {
+//                        // do whatever
+//
+//                    }
+//
+//                    @Override
+//                    public void onLongItemClick(View view, int position) {
+//                    }
+//
+//                })
+//        );
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
     }
+    private boolean loadFragment(Fragment fragment) {
+        //switching fragment
+        if (fragment != null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .commit();
+            return true;
+        }
+        return false;
+    }
+
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -143,8 +163,10 @@ public class MainActivity extends AppCompatActivity {
                     else {
                         actionBar.setTitle(s);
                     }
-                    mRecyclerView.setAdapter(madapter);
+                    loadFragment(new RetailerListFragment());
+                   // mRecyclerView.setAdapter(madapter);
                     prdialog.cancel();
+
 
 
 
@@ -167,6 +189,7 @@ public class MainActivity extends AppCompatActivity {
         Tooltip tooltip=new Tooltip.Builder(toolbar)
                 .setText("If you aren't located right, please select your location here")
                 .setTextColor(Color.WHITE)
+
                 .setGravity(top)
                 .setDismissOnClick(true)
                 .setCancelable(true)
@@ -178,23 +201,34 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            Fragment fragment = null;
             switch (item.getItemId()) {
                 case R.id.navigation_nearme:
 
-                    return true;
+                        fragment = new RetailerListFragment();
+                        break;
+
+
+
+
                 case R.id.navigation_categories:
+                    break;
 
-                    return true;
+
                 case R.id.navigation_cart:
+                    break;
 
-                    return true;
+
                 case R.id.navigation_account:
+                    fragment=new AccountFragment();
+                    break;
 
-                    return true;
+
+
 
 
             }
-            return false;
+            return loadFragment(fragment);
         }
 
     };
