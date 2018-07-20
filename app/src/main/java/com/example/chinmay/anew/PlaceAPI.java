@@ -47,7 +47,7 @@ public class PlaceAPI {
             sb.append("&input=" + URLEncoder.encode(input, "utf8"));
             LatLng latlong=getPosition();
 
-            String url1= "https://maps.googleapis.com/maps/api/place/textsearch/json?query="+input+"&location="+latlong.latitude+","+latlong.longitude+"&radius=10000&key=AIzaSyB9Zgb6Uw_WP5C1xYgmacF0Ce_2zlmUW20";
+            String url1= "https://maps.googleapis.com/maps/api/place/textsearch/json?query="+input+"&location="+latlong.latitude+","+latlong.longitude+"&radius=10000&key="+API_KEY;
 
 
             URL url = new URL(url1);

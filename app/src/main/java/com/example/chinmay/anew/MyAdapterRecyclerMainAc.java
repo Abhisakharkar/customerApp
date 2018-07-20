@@ -71,16 +71,17 @@ public class MyAdapterRecyclerMainAc extends RecyclerView.Adapter<MyAdapterRecyc
 
         holder.enterpriseName.setText(retailersArray.get(position).getEnterpriseName());
 
-        String url = "http://ec2-13-58-16-206.us-east-2.compute.amazonaws.com/rt/" + retailersArray.get(position).getShopPhoto();
+        String url = "http://ec2-13-58-16-206.us-east-2.compute.amazonaws.com/rt" + retailersArray.get(position).getShopPhoto();
         if (!url.equals("0") && !url.isEmpty()){
             Glide.with(context)
                     .load(url)
                     .into(holder.img1);
         }
-        else
-        {
-           // holder.img1.setImageBitmap();
+        if(holder.img1.getDrawable()==null) {
+
+            holder.img1.setImageResource(R.drawable.store);
         }
+
 
 
     }

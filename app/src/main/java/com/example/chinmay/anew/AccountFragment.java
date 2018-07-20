@@ -1,10 +1,22 @@
 package com.example.chinmay.anew;
 
 import android.animation.Animator;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,12 +27,13 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,9 +41,21 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseException;
+import com.google.firebase.FirebaseTooManyRequestsException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthProvider;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Belal on 1/23/2018.
@@ -47,7 +72,29 @@ public class AccountFragment extends Fragment {
     private View mProgressView;
     private TextView forget,login;
     private UserLoginTask mAuthTask = null;
-    private String email;
+    private String email,phone;
+    private int done=0;
+
+    private TextView phoneSignIn;
+    private PhoneAuthProvider.OnVerificationStateChangedCallbacks callbacks;
+    private static String uniqueIdentifier = null;
+    private static final String UNIQUE_ID = "UNIQUE_ID";
+    private static final long ONE_HOUR_MILLI = 60*60*1000;
+
+    private static final String TAG = "FirebasePhoneNumAuth";
+
+    private FirebaseAuth firebaseAuth;
+
+
+
+
+
+
+    private FirebaseFirestore firestoreDB;
+    private  FirebaseUser firebaseUser;
+    private DatabaseReference myRef;
+    private ArrayList<String> phoneList,emailList;
+    private ProgressDialog prdialog;
 
     @Nullable
     @Override
@@ -55,7 +102,99 @@ public class AccountFragment extends Fragment {
 
         View view =inflater.inflate(R.layout.accountfragment, null);
         mAuth = FirebaseAuth.getInstance();
+        firebaseAuth=FirebaseAuth.getInstance();
+        phoneList=new ArrayList<String>();
+        emailList=new ArrayList<String>();
+        phoneSignIn=(TextView)view.findViewById(R.id.phonesign);
         mEmailView = (AutoCompleteTextView) view.findViewById(R.id.email);
+        createCallback();
+        firestoreDB= FirebaseFirestore.getInstance();
+        getInstallationIdentifier();
+        prdialog = new ProgressDialog(getActivity());
+        prdialog.setTitle("Loading");
+        prdialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        prdialog.setCancelable(false);
+        prdialog.show();
+        myRef = FirebaseDatabase.getInstance().getReference();
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (done == 0) {
+                    emailList.clear();
+                    phoneList.clear();
+
+                    for (DataSnapshot myitem : dataSnapshot.getChildren())
+
+                    {
+                        if (myitem.getKey().equals("UserRel")) {
+                            for (DataSnapshot myitem2 : myitem.getChildren()) {
+                                emailList.add(myitem2.child("email").getValue().toString());
+                                phoneList.add(myitem2.child("phone").getValue().toString());
+                            }
+                        }
+                    }
+                    prdialog.cancel();
+                    done = 1;
+
+
+                }
+            }
+
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        phoneSignIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+                    // Get the layout inflater
+                    LayoutInflater inflater = getActivity().getLayoutInflater();
+                    final View prompt = inflater.inflate(R.layout.dialog_phonesignin, null);
+
+
+                    // Inflate and set the layout for the dialog
+                    // Pass null as the parent view because its going in the dialog layout
+                    builder.setView(prompt)
+
+                            // Add action buttons
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int id) {
+                                    EditText e1 = (EditText) prompt.findViewById(R.id.username);
+                                    String s = e1.getText().toString();
+                                    if(s.length()==10) {
+
+                                        phone=s;
+                                        verifyPhoneNumberInit();
+                       //                 getVerificationDataFromFirestoreAndVerify("123456");
+                                        // sign in the user ...
+
+                                    }
+                                    else
+                                    {
+                                        Toast.makeText(getActivity(), "Check Number", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                    builder.setView(prompt).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            Toast.makeText(getActivity(), "Cancelled", Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+                                }
+                            });
+                    AlertDialog d=builder.create();
+                    d.show();
+
+                }
+
+
+        });
 //        populateAutoComplete();
 
         mPasswordView = (EditText)  view.findViewById(R.id.password);
@@ -67,6 +206,7 @@ public class AccountFragment extends Fragment {
                 if (user != null) {
                     // User is signed in
                     // Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+
                 } else {
                     // User is signed out
                     //   Log.d(TAG, "onAuthStateChanged:signed_out");
@@ -208,6 +348,29 @@ public class AccountFragment extends Fragment {
                                 //  Toast.makeText(MainActivity.this, "hvghv", Toast.LENGTH_SHORT).show();
                                 Toast.makeText(getActivity(), "Logged in", Toast.LENGTH_SHORT).show();
                                 showProgress(false);
+                                int flag=0;
+                                for(int i=0;i<emailList.size();i++)
+                                {
+                                    if(mEmailView.getText().equals(phoneList.get(i)))
+                                    {
+                                        flag=1;
+                                        break;
+                                    }
+                                }
+                                if(flag==0)
+                                {
+                                    Intent i=new Intent(getActivity(),SignUp.class);
+                                    i.putExtra("email",""+mEmailView.getText());
+                                    i.putExtra("flagphone","0");
+                                    i.putExtra("flagemail","1");
+                                    startActivity(i);
+                                }
+                                else
+                                {
+                                    Toast.makeText(getActivity(), "You have already signed up", Toast.LENGTH_SHORT).show();
+                                    //Open Required Activity
+
+                                }
                                 //finish();
 
 
@@ -293,7 +456,7 @@ public class AccountFragment extends Fragment {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             //  Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
-                            Toast.makeText(getActivity(), "blaah", Toast.LENGTH_SHORT).show();
+
 
                             // If sign in fails, display a message to the user. If sign in succeeds
                             // the auth state listener will be notified and logic to handle the
@@ -335,6 +498,178 @@ public class AccountFragment extends Fragment {
         }
 
     }
+    private void createCallback() {
+        callbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+            @Override
+            public void onVerificationCompleted(PhoneAuthCredential credential) {
+                Log.d(TAG, "verification completed" + credential);
+                signInWithPhoneAuthCredential(credential);
+            }
+
+            @Override
+            public void onVerificationFailed(FirebaseException e) {
+                Log.w(TAG, "verification failed", e);
+                if (e instanceof FirebaseAuthInvalidCredentialsException) {
+                    Toast.makeText(getActivity(), "Invalid Phone Number", Toast.LENGTH_SHORT).show();
+                } else if (e instanceof FirebaseTooManyRequestsException) {
+                    Toast.makeText(getActivity(),
+                            "Trying too many times",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCodeSent(String verificationId,
+                                   PhoneAuthProvider.ForceResendingToken token) {
+
+                Log.d(TAG, "code sent " + verificationId);
+                addVerificationDataToFirestore(phone, verificationId);
+            }
+        };
+    }
+
+    private boolean validatePhoneNumber(String phoneNumber) {
+        if (TextUtils.isEmpty(phoneNumber)) {
+         //   phoneNum.setError("Invalid phone number.");
+            return false;
+        }
+        return true;
+    }
+    private void verifyPhoneNumberInit() {
+
+        if (!validatePhoneNumber(phone)) {
+            return;
+        }
+        verifyPhoneNumber(phone);
+
+    }
+    private void verifyPhoneNumber(String phno){
+        PhoneAuthProvider.getInstance().verifyPhoneNumber("+91"+phno, 70,
+                TimeUnit.SECONDS, getActivity(), callbacks);
+    }
+
+    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
+        firebaseAuth.signInWithCredential(credential)
+                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "code verified signIn successful");
+                            firebaseUser = task.getResult().getUser();
+                            firebaseUser.getDisplayName();
+                            Toast.makeText(getActivity(), "Signed In"  , Toast.LENGTH_SHORT).show();
+                            int flag=0;
+                            for(int i=0;i<phoneList.size();i++)
+                            {
+                                if(phone.equals(phoneList.get(i)))
+                                {
+                                    flag=1;
+                                    break;
+                                }
+                            }
+                            if(flag==0)
+                            {
+                                Intent i=new Intent(getActivity(),SignUp.class);
+                                i.putExtra("phone",""+phone);
+                                i.putExtra("flagphone","1");
+                                i.putExtra("flagemail","0");
+                                startActivity(i);
+                            }
+                            else
+                            {
+                                Toast.makeText(getActivity(), "You have already signed up", Toast.LENGTH_SHORT).show();
+                                //Open Required Activity
+
+                            }
+
+                        } else {
+                            Log.w(TAG, "code verification failed", task.getException());
+                            if (task.getException() instanceof
+                                    FirebaseAuthInvalidCredentialsException) {
+                             //   verifyCodeET.setError("Invalid code.");
+                            }
+                        }
+                    }
+                });
+    }
+    private void createCredentialSignIn(String verificationId, String verifyCode) {
+        PhoneAuthCredential credential = PhoneAuthProvider.
+                getCredential(verificationId, verifyCode);
+        signInWithPhoneAuthCredential(credential);
+    }
+
+    private void addVerificationDataToFirestore(String phone, String verificationId) {
+        Map verifyMap = new HashMap();
+        verifyMap.put("phone", phone);
+        verifyMap.put("verificationId", verificationId);
+        verifyMap.put("timestamp",System.currentTimeMillis());
+
+        firestoreDB.collection("phoneAuth").document(uniqueIdentifier)
+                .set(verifyMap)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d(TAG, "phone auth info added to db ");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error adding phone auth info", e);
+                    }
+                });
+    }
+    private void getVerificationDataFromFirestoreAndVerify(final String code) {
+
+        firestoreDB.collection("phoneAuth").document(uniqueIdentifier)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot ds = task.getResult();
+                            if(ds.exists()){
+                                disableSendCodeButton(ds.getLong("timestamp"));
+                                if(code != null){
+                                    createCredentialSignIn(ds.getString("verificationId"),
+                                            code);
+                                }else{
+                                    verifyPhoneNumber(ds.getString("phone"));
+                                }
+                            }else{
+
+                                Log.d(TAG, "Code hasn't been sent yet");
+                            }
+
+                        } else {
+                            Log.d(TAG, "Error getting document: ", task.getException());
+                        }
+                    }
+                });
+    }
+    public synchronized String getInstallationIdentifier() {
+        if (uniqueIdentifier == null) {
+            SharedPreferences sharedPrefs = getActivity().getSharedPreferences(
+                    UNIQUE_ID, Context.MODE_PRIVATE);
+            uniqueIdentifier = sharedPrefs.getString(UNIQUE_ID, null);
+            if (uniqueIdentifier == null) {
+                uniqueIdentifier = UUID.randomUUID().toString();
+                SharedPreferences.Editor editor = sharedPrefs.edit();
+                editor.putString(UNIQUE_ID, uniqueIdentifier);
+                editor.commit();
+            }
+        }
+        return uniqueIdentifier;
+    }
+    private void disableSendCodeButton(long codeSentTimestamp){
+        long timeElapsed = System.currentTimeMillis()- codeSentTimestamp;
+        if(timeElapsed > ONE_HOUR_MILLI){
+
+        }
+    }
+
+
+
 
 
 }
