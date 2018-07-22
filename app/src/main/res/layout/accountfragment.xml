@@ -166,21 +166,14 @@
         android:layout_marginRight="30dp"
         android:layout_below="@+id/textView2"
         android:background="#dfdfdf"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:gravity="center"
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/sign_in_button"
+        android:layout_marginTop="15dp"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
         android:layout_below="@+id/ftv"
-        android:text="Sign in Via Phone Number"
-        android:id="@+id/phonesign"
 
-
-        android:textColor="#696969"
-
-        android:textSize="12sp"
-        android:layout_marginTop="20dp"/>
+        android:layout_height="wrap_content" />
 
 
     <TextView

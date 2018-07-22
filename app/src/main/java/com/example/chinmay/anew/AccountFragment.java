@@ -2,6 +2,11 @@ package com.example.chinmay.anew;
 
 import android.animation.Animator;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -20,6 +25,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -71,11 +77,13 @@ public class AccountFragment extends Fragment {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private View mProgressView;
     private TextView forget,login;
+    int RC_SIGN_IN=3;
     private UserLoginTask mAuthTask = null;
     private String email,phone;
     private int done=0;
 
-    private TextView phoneSignIn;
+
+    private TextView phoneSignIn,emailSignIn;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks callbacks;
     private static String uniqueIdentifier = null;
     private static final String UNIQUE_ID = "UNIQUE_ID";
@@ -95,6 +103,7 @@ public class AccountFragment extends Fragment {
     private DatabaseReference myRef;
     private ArrayList<String> phoneList,emailList;
     private ProgressDialog prdialog;
+    private GoogleSignInClient mGoogleSignInClient;
 
     @Nullable
     @Override
@@ -105,21 +114,45 @@ public class AccountFragment extends Fragment {
         firebaseAuth=FirebaseAuth.getInstance();
         phoneList=new ArrayList<String>();
         emailList=new ArrayList<String>();
-        phoneSignIn=(TextView)view.findViewById(R.id.phonesign);
+        //phoneSignIn=(TextView)view.findViewById(R.id.phonesign);
+        emailSignIn=(TextView)view.findViewById(R.id.sign_up_button);
         mEmailView = (AutoCompleteTextView) view.findViewById(R.id.email);
         createCallback();
         firestoreDB= FirebaseFirestore.getInstance();
         getInstallationIdentifier();
         prdialog = new ProgressDialog(getActivity());
         prdialog.setTitle("Loading");
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getActivity());
+        view.findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+
+                startActivityForResult(signInIntent, RC_SIGN_IN);
+            }
+        });
+
         prdialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         prdialog.setCancelable(false);
         prdialog.show();
+        emailSignIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i=new Intent(getActivity(),SignUp.class);
+                i.putExtra("flagphone","0");
+                i.putExtra("flagemail","0");
+                startActivity(i);
+            }
+        });
         myRef = FirebaseDatabase.getInstance().getReference();
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (done == 0) {
+        //        if (done == 0) {
                     emailList.clear();
                     phoneList.clear();
 
@@ -127,9 +160,21 @@ public class AccountFragment extends Fragment {
 
                     {
                         if (myitem.getKey().equals("UserRel")) {
-                            for (DataSnapshot myitem2 : myitem.getChildren()) {
-                                emailList.add(myitem2.child("email").getValue().toString());
-                                phoneList.add(myitem2.child("phone").getValue().toString());
+                            for (final DataSnapshot myitem2 : myitem.getChildren()) {
+                                final Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        emailList.add(myitem2.child("email").getValue().toString());
+                                        phoneList.add(myitem2.child("phone").getValue().toString());
+
+
+
+
+                                    }
+
+                                },3000);
+
                             }
                         }
                     }
@@ -138,7 +183,7 @@ public class AccountFragment extends Fragment {
 
 
                 }
-            }
+           // }
 
 
             @Override
@@ -147,7 +192,7 @@ public class AccountFragment extends Fragment {
             }
         });
 
-        phoneSignIn.setOnClickListener(new View.OnClickListener() {
+     /*   phoneSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -168,7 +213,7 @@ public class AccountFragment extends Fragment {
                                 public void onClick(DialogInterface dialog, int id) {
                                     EditText e1 = (EditText) prompt.findViewById(R.id.username);
                                     String s = e1.getText().toString();
-                                    if(s.length()==10) {
+                                    if(s.length()>=10) {
 
                                         phone=s;
                                         verifyPhoneNumberInit();
@@ -194,7 +239,7 @@ public class AccountFragment extends Fragment {
                 }
 
 
-        });
+        });*/
 //        populateAutoComplete();
 
         mPasswordView = (EditText)  view.findViewById(R.id.password);
@@ -351,7 +396,7 @@ public class AccountFragment extends Fragment {
                                 int flag=0;
                                 for(int i=0;i<emailList.size();i++)
                                 {
-                                    if(mEmailView.getText().equals(phoneList.get(i)))
+                                    if(mEmailView.getText().equals(emailList.get(i)))
                                     {
                                         flag=1;
                                         break;
@@ -665,6 +710,32 @@ public class AccountFragment extends Fragment {
         long timeElapsed = System.currentTimeMillis()- codeSentTimestamp;
         if(timeElapsed > ONE_HOUR_MILLI){
 
+        }
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            // The Task returned from this call is always completed, no need to attach
+            // a listener.
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            handleSignInResult(task);
+        }
+    }
+    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        try {
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+            Toast.makeText(getActivity(), "Signed In", Toast.LENGTH_SHORT).show();
+
+            // Signed in successfully, show authenticated UI.
+           // updateUI(account);
+        } catch (ApiException e) {
+            // The ApiException status code indicates the detailed failure reason.
+            // Please refer to the GoogleSignInStatusCodes class reference for more information.
+            Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
+            //updateUI(null);
         }
     }
 
