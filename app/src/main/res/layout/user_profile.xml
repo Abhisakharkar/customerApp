@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/userProfileLayout"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:gravity="bottom">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profileImage"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/x128"
+        android:src="@drawable/ic_person_black_24dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/x70"
+        app:civ_border_width="@dimen/x2"
+        app:civ_border_color="@color/black"
+        app:civ_circle_background_color="@color/lightGrey" />
+
+    <TextView
+        android:id="@+id/nameAtProfileAct"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Name"
+        android:layout_centerHorizontal="true"
+        android:textAlignment="center"
+        android:textSize="@dimen/xs22"
+        android:textColor="@color/black"
+        android:fontFamily="sans-serif-condensed"
+        android:paddingTop="@dimen/x12"
+        android:layout_marginBottom="@dimen/x48"/>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/x4">
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="My Orders"
+            android:textAlignment="textStart"
+            android:background="@drawable/button_back_profile"
+            android:textSize="@dimen/xs16"
+            android:paddingLeft="@dimen/x32"
+            android:paddingTop="@dimen/x8"
+            android:paddingBottom="@dimen/x4"
+            android:textAllCaps="false"/>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/x4">
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Profile Details"
+            android:textAlignment="textStart"
+            android:background="@drawable/button_back_profile"
+            android:textSize="@dimen/xs16"
+            android:paddingLeft="@dimen/x32"
+            android:paddingTop="@dimen/x8"
+            android:paddingBottom="@dimen/x4"
+            android:textAllCaps="false"/>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/x4"
+        android:layout_marginBottom="@dimen/x32">
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Contributions"
+            android:textAlignment="textStart"
+            android:background="@drawable/button_back_profile"
+            android:textSize="@dimen/xs16"
+            android:paddingLeft="@dimen/x32"
+            android:paddingTop="@dimen/x8"
+            android:paddingBottom="@dimen/x4"
+            android:textAllCaps="false"/>
+    </android.support.v7.widget.CardView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/x48"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            android:id="@+id/logout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/x48"
+            android:gravity="center"
+            android:text="Log out"
+            android:textColor="@color/blue_normal"
+            android:textStyle="bold"
+            android:layout_weight="1" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/x48"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="Contribute and Earn"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:background="@color/blue_normal"/>
+    </LinearLayout>
+
+</LinearLayout>
