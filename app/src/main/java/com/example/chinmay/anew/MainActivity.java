@@ -19,7 +19,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.chinmay.anew.adapter.RetailersAdapter;
 import com.example.chinmay.anew.fragment.AccountFragment;
+import com.example.chinmay.anew.fragment.Categories;
+import com.example.chinmay.anew.fragment.RetailerListFragment;
+import com.example.chinmay.anew.model.Category;
+import com.example.chinmay.anew.model.RetailersList;
+import com.example.chinmay.anew.repository.ServerOperation;
 import com.tooltip.Tooltip;
 
 import java.util.ArrayList;
@@ -27,7 +33,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
-    private ArrayList<retailers> retailersArray;
+    private ArrayList<RetailersList> retailersListArray;
     private GpsTracker gpsTracker;
     private ActionBar actionBar;
     private String place;
@@ -35,75 +41,45 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
     android.support.v7.app.AlertDialog d;
-    private MyAdapterRecyclerMainAc madapter;
+    private RetailersAdapter madapter;
     private ProgressDialog prdialog;
-    private ServerOp s1;
+    private ServerOperation s1;
     private TextView retail;
+    private ArrayList<Category> categories;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         toolbar = (Toolbar) findViewById(R.id.my_toolbar); // Attaching the layout to the toolbar object
         setSupportActionBar(toolbar);
-        retailersArray=new ArrayList<>();
+        retailersListArray =new ArrayList<>();
+
         Bundle b=getIntent().getExtras();
-
-
-        if(b!=null)
-        {
+        if(b!=null) {
             place=b.getString("place");
 
         }
-
         actionBar = getSupportActionBar();
-        if(place==null)
-        {
+        if(place==null) {
             actionBar.setTitle("Not Available");
         }
-        else
-        {
+        else {
             actionBar.setTitle(place);
         }
+
+        s1 = new ServerOperation(this);
         loadFragment(new RetailerListFragment());
         toolbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 Intent i=new Intent(MainActivity.this,SearchPlace.class);
                 startActivityForResult(i,from_map);
             }
         });
-
-
-//        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
-//        mRecyclerView.setHasFixedSize(true);
-//        mRecyclerView.setItemViewCacheSize(20);
-//        mRecyclerView.setDrawingCacheEnabled(true);
-//        mRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-//        mLayoutManager = new LinearLayoutManager(this);
-//        mLayoutManager = new LinearLayoutManager(this);
-//        mRecyclerView.setLayoutManager(mLayoutManager);
-//        mRecyclerView.addItemDecoration(new VerticalSpaceItemDecoration(0));
-//        mRecyclerView.addItemDecoration(new DividerItemDecoration(MainActivity.this, R.drawable.divider));
-//        madapter = new MyAdapterRecyclerMainAc(this);
         showTooltip(R.id.my_toolbar, Gravity.BOTTOM);
-//        mRecyclerView.setAdapter(madapter);
-//        mRecyclerView.addOnItemTouchListener(
-//                new RecyclerItemClickListener(this, mRecyclerView ,new RecyclerItemClickListener.OnItemClickListener() {
-//                    @Override public void onItemClick(View view, int position) {
-//                        // do whatever
-//
-//                    }
-//
-//                    @Override
-//                    public void onLongItemClick(View view, int position) {
-//                    }
-//
-//                })
-//        );
-
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
@@ -133,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
             prdialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             prdialog.setCancelable(false);
             prdialog.show();
-            s1=new ServerOp(this);
             //Creating the object for server
             s1.requestServerLocationWithParameters(data.getDoubleExtra("latitude",79),data.getDoubleExtra("longitude",21));
 
@@ -173,8 +148,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void showTooltip(int my_toolbar, int top)
-    {
+    private void showTooltip(int my_toolbar, int top) {
         Tooltip tooltip=new Tooltip.Builder(toolbar)
                 .setText("If you aren't located right, please select your location here")
                 .setTextColor(Color.WHITE)
@@ -185,39 +159,30 @@ public class MainActivity extends AppCompatActivity {
                 .setBackgroundColor(Color.parseColor("#648ab4"))
                 .setTextSize(20f).show();
     }
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             Fragment fragment = null;
             switch (item.getItemId()) {
                 case R.id.navigation_nearme:
-
-                        fragment = new RetailerListFragment();
-                        break;
-
-
-
+                    fragment = new RetailerListFragment();
+                    return loadFragment(fragment);
 
                 case R.id.navigation_categories:
+                    Categories categoriesFrag = new Categories();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,categoriesFrag).commit();
                     break;
-
 
                 case R.id.navigation_cart:
-                    break;
 
+                    break;
 
                 case R.id.navigation_account:
                     fragment=new AccountFragment();
-                    break;
-
-
-
-
-
+                    return loadFragment(fragment);
             }
-            return loadFragment(fragment);
+            return true;
         }
 
     };

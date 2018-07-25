@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
+import com.example.chinmay.anew.model.MyGooglePlaces;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;

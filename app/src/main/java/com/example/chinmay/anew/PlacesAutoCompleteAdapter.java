@@ -12,6 +12,8 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.chinmay.anew.model.MyGooglePlaces;
+
 import java.util.ArrayList;
 
 class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements Filterable {

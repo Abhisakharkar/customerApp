@@ -1,6 +1,6 @@
-package com.example.chinmay.anew;
+package com.example.chinmay.anew.model;
 
-public class retailers {
+public class RetailersList {
     private String retailerId;
     private String enterpriseName;
     private String  mobileNo;
@@ -11,9 +11,7 @@ public class retailers {
     private String longloc;
     private String deliveryStatus;
 
-    retailers( String retailerId, String enterpriseName, String  mobileNo, String  shopPhoto, String  subLocality1Id, String  localityId, String latloc, String longloc, String deliveryStatus)
-    {
-
+    public RetailersList(String retailerId, String enterpriseName, String mobileNo, String shopPhoto, String subLocality1Id, String localityId, String latloc, String longloc, String deliveryStatus) {
         this.setRetailerId(retailerId);
         this.setEnterpriseName(enterpriseName);
         this.setMobileNo(mobileNo);
@@ -23,8 +21,6 @@ public class retailers {
         this.setLatloc(latloc);
         this.setLongloc(longloc);
         this.setDeliveryStatus(deliveryStatus);
-
-
     }
 
     public String getRetailerId() {

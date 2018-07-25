@@ -1,17 +1,22 @@
-package com.example.chinmay.anew;
+package com.example.chinmay.anew.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.example.chinmay.anew.DividerItemDecoration;
+import com.example.chinmay.anew.adapter.RetailersAdapter;
+import com.example.chinmay.anew.R;
+import com.example.chinmay.anew.RecyclerItemClickListener;
+import com.example.chinmay.anew.repository.ServerOperation;
+import com.example.chinmay.anew.VerticalSpaceItemDecoration;
 
 /**
  * Created by Belal on 1/23/2018.
@@ -20,7 +25,7 @@ import android.widget.TextView;
 public class RetailerListFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
-    private MyAdapterRecyclerMainAc madapter;
+    private RetailersAdapter madapter;
     private TextView retail;
     private Handler handler;
 
@@ -41,7 +46,7 @@ public class RetailerListFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.addItemDecoration(new VerticalSpaceItemDecoration(0));
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), R.drawable.divider));
-        madapter = new MyAdapterRecyclerMainAc(getActivity());
+        madapter = new RetailersAdapter(getActivity());
 
         mRecyclerView.setAdapter(madapter);
         mRecyclerView.addOnItemTouchListener(
@@ -57,9 +62,9 @@ public class RetailerListFragment extends Fragment {
 
                 })
         );
-        if(ServerOp.retailersArray.size()==0)
+        if(ServerOperation.retailersArray.size()==0)
         {
-            retail.setText("No retailers found near you");
+            retail.setText("No RetailersList found near you");
         }
 
 

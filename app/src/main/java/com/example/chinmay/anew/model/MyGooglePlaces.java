@@ -1,4 +1,4 @@
-package com.example.chinmay.anew;
+package com.example.chinmay.anew.model;
 
 import com.google.android.gms.maps.model.LatLng;
 

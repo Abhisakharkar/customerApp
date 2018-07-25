@@ -19,7 +19,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
-class GpsTracker extends Service implements LocationListener {
+public class GpsTracker extends Service implements LocationListener {
     private final Context mContext;
 
     // flag for GPS status

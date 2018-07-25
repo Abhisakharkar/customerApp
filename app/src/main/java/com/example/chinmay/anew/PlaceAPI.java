@@ -3,10 +3,10 @@ package com.example.chinmay.anew;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.chinmay.anew.model.MyGooglePlaces;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -16,7 +16,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class PlaceAPI {
 

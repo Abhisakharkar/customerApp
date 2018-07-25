@@ -10,22 +10,12 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
+import com.example.chinmay.anew.repository.ServerOperation;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class Splash extends AppCompatActivity {
@@ -38,7 +28,7 @@ public class Splash extends AppCompatActivity {
     private JSONObject parameters;
     private RequestQueue requestQueue;
     private int flag;
-    private ServerOp s1;
+    private ServerOperation s1;
 
 
     @Override
@@ -46,25 +36,7 @@ public class Splash extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         checkLocationPermission();
-
-
-                /* Create an Intent that will start the Menu-Activity. */
-
-
-
-
-
-
-
-                                                          /* Create an Intent that will start the Menu-Activity. */
-
-
-
-        }
-
-
-
-
+    }
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
@@ -79,37 +51,18 @@ public class Splash extends AppCompatActivity {
 
                 if (permission.equals(Manifest.permission.ACCESS_FINE_LOCATION)) {
                     if (grantResult == PackageManager.PERMISSION_GRANTED) {
-
-
-                    CallActivity();
-
-
-                    } else {
-                        ActivityCompat.requestPermissions(Splash.this,
-                                new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                                MY_PERMISSIONS_REQUEST_LOCATION); }
+                        CallActivity();
+                    }else {
+                        ActivityCompat.requestPermissions(Splash.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION); }
                 }
             }
         }
     }
 
     public void checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-            // Asking user if explanation is needed
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    android.Manifest.permission.ACCESS_FINE_LOCATION)) {
-//
-//                // Show an explanation to the user *asynchronously* -- don't block
-//                // this thread waiting for the user's response! After the user
-//                // sees the explanation, try again to request the permission.
-//
-//                //Prompt the user once explanation has been shown
-//                ActivityCompat.requestPermissions(this,
-//                        new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-//                        MY_PERMISSIONS_REQUEST_LOCATION);
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_FINE_LOCATION)) {
                 new AlertDialog.Builder(this)
                         .setTitle("Location Permission Needed")
                         .setMessage("This app needs the Location permission, please accept to use location functionality")
@@ -126,7 +79,6 @@ public class Splash extends AppCompatActivity {
                         .show();
 
             } else {
-                // No explanation needed, we can request the permission.
                 ActivityCompat.requestPermissions(this,
                         new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_LOCATION);
@@ -134,61 +86,26 @@ public class Splash extends AppCompatActivity {
 
 
         }
-        else
-        {
+        else {
             CallActivity();
         }
     }
 
     private void CallActivity() {
-
-        s1=new ServerOp(this);
-        //Creating the object for server
+        s1=new ServerOperation(this);
         s1.requestServerLocation();
-
-
-
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-
                 Intent mainIntent = new Intent(Splash.this,MainActivity.class);
                 mainIntent.putExtra("place",s1.getLocation());
-
-
                 Splash.this.startActivity(mainIntent);
                 Splash.this.finish();
-
-
-
             }
 
         },2500);
 
     }
-
-
-//        JsonObjectRequest sr = new JsonObjectRequest(Request.Method.POST, url, new Response.Listener<JSONObject>() {
-//            @Override
-//            public void onResponse(JSONObject response) {
-//
-//                Toast.makeText(Splash.this, "it worked", Toast.LENGTH_SHORT).show();
-//            }
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Toast.makeText(Splash.this, "Please Check your connection", Toast.LENGTH_SHORT).show();
-//            }
-//        }) {
-//
-//        };
-//        queue.add(sr);
-
-
-
-
-//
-
-    }
+}
 
