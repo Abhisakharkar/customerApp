@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/loginLayout">
+
+    <EditText
+        android:id="@+id/emailAtAccountFrag"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/x48"
+        android:layout_marginLeft="@dimen/x32"
+        android:layout_marginRight="@dimen/x32"
+        android:layout_marginBottom="@dimen/x32"
+        android:paddingLeft="@dimen/x16"
+        android:textSize="@dimen/xs16"
+        android:hint="@string/emailAddressStr"
+        android:inputType="textEmailAddress"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:background="@drawable/back"
+        android:textColor="@color/black"
+        android:textColorHint="@color/textHintBold"
+        android:layout_above="@+id/passwordAtAccountFrag"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:id="@+id/passwordAtAccountFrag"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/x48"
+        android:textSize="@dimen/xs16"
+        android:paddingLeft="@dimen/x16"
+        android:layout_marginLeft="@dimen/x32"
+        android:layout_marginRight="@dimen/x32"
+        android:background="@drawable/back"
+        android:hint="@string/passwordStr"
+        android:inputType="textPassword"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textColor="@color/black"
+        android:textColorHint="@color/textHintBold"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true" />
+
+    <com.dd.processbutton.iml.ActionProcessButton
+        android:id="@+id/loginBtn"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/x48"
+        android:text="@string/loginStr"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/xs22"
+        android:layout_marginLeft="@dimen/x32"
+        android:layout_marginRight="@dimen/x32"
+        android:layout_marginTop="@dimen/x22"
+        app:pb_colorNormal="@color/blue_normal"
+        app:pb_colorPressed="@color/blue_pressed"
+        app:pb_colorProgress="@color/purple_progress"
+        app:pb_textProgress="Please Wait"
+        app:pb_textError="@string/retry"
+        app:pb_colorError="@color/blue_normal"
+        android:layout_below="@+id/passwordAtAccountFrag" />
+
+    <TextView
+        android:id="@+id/forgetPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/forgetPassword"
+        android:layout_marginLeft="@dimen/x16"
+        android:layout_marginRight="@dimen/x16"
+        android:gravity="center"
+        android:textColor="@color/textHintBold"
+        android:textSize="@dimen/xs12"
+        android:layout_marginTop="@dimen/x22"
+        android:layout_below="@+id/loginBtn"
+        android:paddingTop="@dimen/x8"
+        android:paddingBottom="@dimen/x8"/>
+
+    <View
+        android:id="@+id/viewLineAtLoginAct"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/x2"
+        android:background="@color/lightGrey"
+        android:layout_below="@+id/forgetPassword"/>
+
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/googleLoginBtn"
+        android:layout_marginTop="@dimen/x16"
+        android:layout_centerHorizontal="true"
+        android:layout_width="match_parent"
+        android:layout_marginRight="@dimen/x32"
+        android:layout_marginLeft="@dimen/x32"
+        android:layout_below="@+id/viewLineAtLoginAct"
+        android:layout_height="wrap_content" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/x2"
+        android:background="@color/lightGrey"
+        android:layout_above="@+id/signUpBtnAtLoginFrag"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/x48"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/x48"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="Contribute and Earn"
+            android:textColor="@color/blue_normal"
+            android:textStyle="bold"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:id="@+id/signUpBtnAtLoginFrag"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/x48"
+            android:gravity="center"
+            android:text="@string/doNoAccount"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:background="@color/blue_normal"/>
+    </LinearLayout>
+</RelativeLayout>

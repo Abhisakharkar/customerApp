@@ -48,6 +48,9 @@ dependencies {
     api 'io.nlopez.smartlocation:library:3.3.1'
     api 'com.google.firebase:firebase-firestore:17.0.3'
 
+    implementation 'com.github.dmytrodanylyk.android-process-button:library:1.0.4'
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
+
 }
 
 apply plugin: 'com.google.gms.google-services'
