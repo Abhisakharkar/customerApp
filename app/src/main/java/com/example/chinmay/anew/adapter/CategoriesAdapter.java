@@ -33,7 +33,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Cu
 
     @Override
     public void onBindViewHolder(@NonNull CustomAdapter holder, int position) {
-        if(categories != null){
+        if(categories != null && position < categories.size()){
             holder.textView.setText(categories.get(position).getName());
             if(categories.get(position).getImageUrl() != null){
                 /*Glide.with(context)
