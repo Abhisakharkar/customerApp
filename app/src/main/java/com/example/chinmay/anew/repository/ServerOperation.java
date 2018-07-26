@@ -1,6 +1,7 @@
 package com.example.chinmay.anew.repository;
 
 import android.app.Application;
+import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
@@ -16,6 +17,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.load.engine.Resource;
 import com.example.chinmay.anew.GpsTracker;
+import com.example.chinmay.anew.fragment.Categories;
 import com.example.chinmay.anew.model.Category;
 import com.example.chinmay.anew.model.RetailersList;
 import com.example.chinmay.anew.utils.JsonUtils;
@@ -32,7 +34,7 @@ import java.util.Map;
 
 public class ServerOperation {
 
-    private String CategoriesUrl = "http://ec2-13-58-16-206.us-east-2.compute.amazonaws.com:6868/magento_get_categories";
+    private String CategoriesUrl = "http://ec2-13-59-88-132.us-east-2.compute.amazonaws.com:6868/magento_get_categories";
 
     private String length,localityTier,localityId;
     private RequestQueue requestQueue;
@@ -52,9 +54,6 @@ public class ServerOperation {
     private String photoUrl="http://ec2-18-220-165-73.us-east-2.compute.amazonaws.com/rt";
 
     private String subLocality1Id;
-
-    private ArrayList<Category> category;
-
 
     public ServerOperation(Context ctx){
         retailersArray=new ArrayList<>();
@@ -274,9 +273,10 @@ public class ServerOperation {
         }
     }
 
-    public void getCategories(){
+    public MutableLiveData<ArrayList<Category>> getCategories(){
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         JSONObject jsonBody = new JSONObject();
+        final MutableLiveData<ArrayList<Category>> categoryArrayList = new MutableLiveData<>();
         try {
             jsonBody = new JSONObject("{\"type\":\"example\"}");
         } catch (JSONException ex) {
@@ -287,7 +287,8 @@ public class ServerOperation {
             public void onResponse(JSONObject response) {
                 try{
                     JsonUtils jsonUtils = new JsonUtils();
-                    category = jsonUtils.parseCategoryJson(String.valueOf(response));
+                    ArrayList<Category> category = jsonUtils.parseCategoryJson(String.valueOf(response));
+                    categoryArrayList.setValue(category);
                 }catch (Exception e){
 
                 }
@@ -307,10 +308,7 @@ public class ServerOperation {
             }
         };
         requestQueue.add(jsonObjectRequest);
-    }
-
-    public ArrayList<Category> getCategoriesList(){
-        return category;
+        return categoryArrayList;
     }
 
 }

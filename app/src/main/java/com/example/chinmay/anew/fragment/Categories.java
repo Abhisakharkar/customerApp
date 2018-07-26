@@ -1,41 +1,34 @@
 package com.example.chinmay.anew.fragment;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.chinmay.anew.R;
 import com.example.chinmay.anew.RecyclerItemClickListener;
 import com.example.chinmay.anew.adapter.CategoriesAdapter;
 import com.example.chinmay.anew.model.Category;
-import com.example.chinmay.anew.repository.ServerOperation;
 import com.example.chinmay.anew.view.ChildView;
 import com.example.chinmay.anew.view.HeaderView;
+import com.example.chinmay.anew.viewModel.CategoryViewModel;
 import com.mindorks.placeholderview.ExpandablePlaceHolderView;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 public class Categories extends Fragment {
 
     private RecyclerView recyclerView1;
     private ExpandablePlaceHolderView recyclerView2;
 
-    private ArrayList<Category> categories1 = new ArrayList<>();
-    private ArrayList<Category> categories = new ArrayList<>();
-
-    private Map<String,List<Category>> categoryMap;
+    private ArrayList<Category> lvlOneArrayList;
+    private ArrayList<Category> fullArrayList;
 
     public Categories() {
         // Required empty public constructor
@@ -54,16 +47,14 @@ public class Categories extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         recyclerView1.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false));
-        recyclerView2.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false));
 
-        findItemAtLvl();
+        findCategoryAtLvlOne();
         recyclerView1.setHasFixedSize(true);
-        recyclerView2.setHasFixedSize(true);
 
         recyclerView1.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), recyclerView1,new RecyclerItemClickListener.OnItemClickListener() {
                     @Override public void onItemClick(View view, int position) {
-                        findChildAt1(position);
+                        findChildAtLvlTwo(position);
                     }
 
                     @Override
@@ -72,48 +63,40 @@ public class Categories extends Fragment {
 
                 })
         );
+    }
 
-        recyclerView2.setOnClickListener(new View.OnClickListener() {
+    private void findCategoryAtLvlOne(){
+        CategoryViewModel categoryViewModel = ViewModelProviders.of(getActivity()).get(CategoryViewModel.class);
+        categoryViewModel.getCategory(getActivity()).observe(getActivity(), new Observer<ArrayList<Category>>() {
             @Override
-            public void onClick(android.view.View view) {
-                Toast.makeText(getContext(),"Clicked", view.getId()).show();
+            public void onChanged(@Nullable ArrayList<Category> categoryArrayList) {
+                if(categoryArrayList != null){
+                    ArrayList<Category> arrayList = new ArrayList<>();
+                    for(int i=0;i<categoryArrayList.size();i++){
+                        if(categoryArrayList.get(i).getLevel().equalsIgnoreCase("1")){
+                            arrayList.add(categoryArrayList.get(i));
+                        }
+                    }
+                    CategoriesAdapter categoriesAdapter = new CategoriesAdapter(arrayList,getActivity());
+                    recyclerView1.setAdapter(categoriesAdapter);
+                    lvlOneArrayList = arrayList;
+                    fullArrayList = categoryArrayList;
+                    findChildAtLvlTwo(0);
+                }
             }
         });
-
     }
 
-    private void findItemAtLvl(){
-        final ServerOperation serverOperation = new ServerOperation(getActivity());
-        serverOperation.getCategories();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                categories = serverOperation.getCategoriesList();
-                for(int i = 0; i< categories.size(); i++){
-                    try{
-                        if(Integer.parseInt(categories.get(i).getLevel()) == 0){
-                            categories1.add(categories.get(i));
-                        }
-                    }catch (Exception e){
-
-                    }
-                }
-                CategoriesAdapter myAdapter = new CategoriesAdapter(categories1,getActivity());
-                recyclerView1.setAdapter(myAdapter);
-                findChildAt1(0);
-            }
-        },1000);
-    }
-
-    private void findChildAt1(int pos){
+    private void findChildAtLvlTwo(int pos){
         ArrayList<Category> arrayList = new ArrayList<>();
-        ArrayList<Integer> childId = categories.get(pos).getChildren();
+        arrayList.clear();
+        ArrayList<Integer> childId = lvlOneArrayList.get(pos).getChildren();
         try{
             for(int i=0;i<childId.size();i++){
-                for(int j=0;j<categories.size();j++){
+                for(int j=0;j<fullArrayList.size();j++){
                     try{
-                        if(Integer.parseInt(categories.get(j).getId()) == childId.get(i)){
-                            arrayList.add(categories.get(j));
+                        if(Integer.parseInt(fullArrayList.get(j).getId()) == childId.get(i)){
+                            arrayList.add(fullArrayList.get(j));
                         }
                     }catch (Exception e){
 
@@ -122,8 +105,10 @@ public class Categories extends Fragment {
             }
 
             for(int i=0;i<arrayList.size();i++){
+                recyclerView2.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false));
                 recyclerView2.addView(new HeaderView(getActivity(), arrayList.get(i).getName(),arrayList.get(i).getImageUrl()));
-                findChildAt2(i,arrayList);
+                recyclerView2.notify();
+                findChildAtLvlThree(i,arrayList);
             }
 
         }catch (Exception e){
@@ -131,15 +116,16 @@ public class Categories extends Fragment {
         }
     }
 
-    private void findChildAt2(int pos,ArrayList<Category> categoryArrayList){
+    private void findChildAtLvlThree(int pos, ArrayList<Category> categoryArrayList){
         ArrayList<Category> arrayList = new ArrayList<>();
+        arrayList.clear();
         ArrayList<Integer> childId = categoryArrayList.get(pos).getChildren();
         try{
             for(int i=0;i<childId.size();i++){
-                for(int j=0;j<categories.size();j++){
+                for(int j=0;j<fullArrayList.size();j++){
                     try{
-                        if(Integer.parseInt(categories.get(j).getId()) == childId.get(i)){
-                            arrayList.add(categories.get(j));
+                        if(Integer.parseInt(fullArrayList.get(j).getId()) == childId.get(i)){
+                            arrayList.add(fullArrayList.get(j));
                         }
                     }catch (Exception e){
 
