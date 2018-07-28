@@ -19,6 +19,8 @@ import com.bumptech.glide.load.engine.Resource;
 import com.example.chinmay.anew.GpsTracker;
 import com.example.chinmay.anew.fragment.Categories;
 import com.example.chinmay.anew.model.Category;
+import com.example.chinmay.anew.model.ProductDetail;
+import com.example.chinmay.anew.model.RetailerDetail;
 import com.example.chinmay.anew.model.RetailersList;
 import com.example.chinmay.anew.utils.JsonUtils;
 import com.google.gson.JsonObject;
@@ -35,6 +37,8 @@ import java.util.Map;
 public class ServerOperation {
 
     private String CategoriesUrl = "http://ec2-13-59-88-132.us-east-2.compute.amazonaws.com:6868/magento_get_categories";
+    private String RetailerDetailUrl = "http://ec2-13-59-88-132.us-east-2.compute.amazonaws.com:6868/get_details_and_product_of_retailer";
+    private String ProductDetailUrl = "http://ec2-13-59-88-132.us-east-2.compute.amazonaws.com:6868/magento_get_product_with_ids";
 
     private String length,localityTier,localityId;
     private RequestQueue requestQueue;
@@ -48,10 +52,10 @@ public class ServerOperation {
     private HashMap params;
     private JSONObject locationParameters,retailerParameters;
     private Context context;
-    private String locationURL="http://ec2-13-58-16-206.us-east-2.compute.amazonaws.com:6868/get_location_ids";
-    private String RetailersURL="http://ec2-13-58-16-206.us-east-2.compute.amazonaws.com:6868/get_retailers_near_me";
+    private String locationURL="http://ec2-13-59-88-132.us-east-2.compute.amazonaws.com:6868/get_location_ids";
+    private String RetailersURL="http://ec2-13-59-88-132.us-east-2.compute.amazonaws.com:6868/get_retailers_near_me";
 
-    private String photoUrl="http://ec2-18-220-165-73.us-east-2.compute.amazonaws.com/rt";
+    private String photoUrl="http://ec2-13-59-88-132.us-east-2.compute.amazonaws.com/magento/pub/media/catalog/product";
 
     private String subLocality1Id;
 
@@ -121,12 +125,12 @@ public class ServerOperation {
 
         if (localityTier.equals("0")) {
             params = new HashMap();
-            params.put("localityId", 9);
+            params.put("localityId", localityId);
             retailerParameters = new JSONObject(params);
         }
         else {
             params = new HashMap();
-            params.put("localityId", 9);
+            params.put("localityId", localityId);
             params.put("subLocality1Id", subLocality1Id);
             retailerParameters = new JSONObject(params);
         }
@@ -309,6 +313,81 @@ public class ServerOperation {
         };
         requestQueue.add(jsonObjectRequest);
         return categoryArrayList;
+    }
+
+    public MutableLiveData<RetailerDetail> getRetailerDetail(String id){
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+
+        HashMap parameters = new HashMap();
+        parameters.put("retailerId",id);
+        JSONObject jsonObject = new JSONObject(parameters);
+
+        final MutableLiveData<RetailerDetail> mutableLiveData = new MutableLiveData<>();
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,RetailerDetailUrl,jsonObject, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try{
+                    JsonUtils jsonUtils = new JsonUtils();
+                    RetailerDetail retailerDetail = jsonUtils.parseRetailerDetail(String.valueOf(response));
+                    mutableLiveData.setValue(retailerDetail);
+                }catch (Exception e){
+
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
+                Log.e("Volley", "Error");
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/json");
+                return params;
+            }
+        };
+        requestQueue.add(jsonObjectRequest);
+        return mutableLiveData;
+
+    }
+
+    public MutableLiveData<ArrayList<ProductDetail>> getProductDetails(String id){
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+
+        HashMap parameters = new HashMap();
+        parameters.put("Ids",id);
+        JSONObject jsonObject = new JSONObject(parameters);
+
+        final MutableLiveData<ArrayList<ProductDetail>> mutableLiveData = new MutableLiveData<>();
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,ProductDetailUrl,jsonObject, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try{
+                    JsonUtils jsonUtils = new JsonUtils();
+                    ArrayList<ProductDetail> productDetails = jsonUtils.parseProductDetail(String.valueOf(response));
+                    mutableLiveData.setValue(productDetails);
+                }catch (Exception e){
+
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
+                Log.e("Volley", "Error");
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/json");
+                return params;
+            }
+        };
+        requestQueue.add(jsonObjectRequest);
+        return mutableLiveData;
     }
 
 }

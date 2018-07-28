@@ -1,5 +1,6 @@
 package com.example.chinmay.anew.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -12,22 +13,30 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.chinmay.anew.DividerItemDecoration;
+import com.example.chinmay.anew.RetailerDetailAct;
 import com.example.chinmay.anew.adapter.RetailersAdapter;
 import com.example.chinmay.anew.R;
 import com.example.chinmay.anew.RecyclerItemClickListener;
+import com.example.chinmay.anew.model.RetailersList;
 import com.example.chinmay.anew.repository.ServerOperation;
 import com.example.chinmay.anew.VerticalSpaceItemDecoration;
+
+import java.util.ArrayList;
 
 /**
  * Created by Belal on 1/23/2018.
  */
 
 public class RetailerListFragment extends Fragment {
+
     private RecyclerView mRecyclerView;
+    private TextView retail;
+
     private LinearLayoutManager mLayoutManager;
     private RetailersAdapter madapter;
-    private TextView retail;
     private Handler handler;
+
+    private ArrayList<RetailersList> retailersListArray;
 
     @Nullable
     @Override
@@ -35,25 +44,36 @@ public class RetailerListFragment extends Fragment {
 
         View view =inflater.inflate(R.layout.retailerlist, null);
         retail=(TextView)view.findViewById(R.id.retail);
-
         mRecyclerView = (RecyclerView)view.findViewById(R.id.my_recycler_view);
+        return view;
+    }
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        retailersListArray =new ArrayList<>();
+        retailersListArray = ServerOperation.retailersArray;
+
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setItemViewCacheSize(20);
         mRecyclerView.setDrawingCacheEnabled(true);
         mRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        //mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.addItemDecoration(new VerticalSpaceItemDecoration(0));
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), R.drawable.divider));
-        madapter = new RetailersAdapter(getActivity());
 
+        madapter = new RetailersAdapter(retailersListArray,getActivity());
         mRecyclerView.setAdapter(madapter);
+
         mRecyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), mRecyclerView ,new RecyclerItemClickListener.OnItemClickListener() {
                     @Override public void onItemClick(View view, int position) {
-                        // do whatever
-
+                        Intent intent = new Intent(getActivity(), RetailerDetailAct.class);
+                        if(retailersListArray != null && retailersListArray.size() > position){
+                            intent.putExtra("RETID",retailersListArray.get(position).getRetailerId());
+                        }
+                        startActivity(intent);
                     }
 
                     @Override
@@ -62,27 +82,9 @@ public class RetailerListFragment extends Fragment {
 
                 })
         );
-        if(ServerOperation.retailersArray.size()==0)
-        {
+        if(ServerOperation.retailersArray.size()==0) {
             retail.setText("No RetailersList found near you");
         }
-
-
-        return view;
-
-        //just change the fragment_dashboard
-        //with the fragment you want to inflate
-        //like if the class is HomeFragment it should have R.layout.home_fragment
-        //if it is DashboardFragment it should have R.layout.fragment_dashboard
-
-    }
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-
-        // Bind your views.
-
     }
 
 }

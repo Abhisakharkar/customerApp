@@ -44,7 +44,8 @@
             android:name=".SignUp"
             android:launchMode="singleTop"
             android:windowSoftInputMode="adjustResize|stateHidden" />
-        <activity android:name=".AddCategoryAct"></activity>
+        <activity android:name=".AddCategoryAct" />
+        <activity android:name=".RetailerDetailAct"></activity>
     </application>
 
 </manifest>

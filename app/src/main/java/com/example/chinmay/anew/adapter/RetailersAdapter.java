@@ -22,64 +22,35 @@ import java.util.ArrayList;
 
 public class RetailersAdapter extends RecyclerView.Adapter<RetailersAdapter.MyViewHolder> {
 
-
-
     private ArrayList<RetailersList> retailersListArray;
     private Context context;
 
-
-    public RetailersAdapter(Context contxt) {
-
-        context=contxt;
-
-
-        retailersListArray =new ArrayList<>();
-        retailersListArray = ServerOperation.retailersArray;
-
-
-
+    public RetailersAdapter(ArrayList<RetailersList> retailersListArray, Context context) {
+        this.retailersListArray = retailersListArray;
+        this.context = context;
     }
-
-//    public void remove(String item) {
-//        int position = mDataset.indexOf(item);
-//        mDataset.remove(position);
-//        notifyItemRemoved(position);
-//
-//    }
 
     @Override
     public RetailersAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.rowlayout, parent, false);
-
-
-
-        MyViewHolder vh = new MyViewHolder(v);
-        context=v.getContext();
-        return vh;
+        return new MyViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
-        if(retailersListArray.size()==0)
-        {
+        if(retailersListArray.size()==0) {
             holder.retail.setText("No RetailersList found near you");
         }
 
-
-
-
-
-
         holder.enterpriseName.setText(retailersListArray.get(position).getEnterpriseName());
+        String url = "http://ec2-13-58-16-206.us-east-2.compute.amazonaws.com/rt/" + retailersListArray.get(position).getShopPhoto();
 
-        String url = "http://ec2-13-58-16-206.us-east-2.compute.amazonaws.com/rt" + retailersListArray.get(position).getShopPhoto();
         if (!url.equals("0") && !url.isEmpty()){
             Glide.with(context)
                     .load(url)
                     .into(holder.img1);
         }
         if(holder.img1.getDrawable()==null) {
-
             holder.img1.setImageResource(R.drawable.store);
         }
 
@@ -90,14 +61,11 @@ public class RetailersAdapter extends RecyclerView.Adapter<RetailersAdapter.MyVi
     @Override
     public int getItemCount() {
         return retailersListArray.size();
-
-
-        //This will be changed later
     }
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView contact;
+
         public TextView timeToReach;
         public ImageView img1;
         public TextView enterpriseName;
@@ -110,17 +78,9 @@ public class RetailersAdapter extends RecyclerView.Adapter<RetailersAdapter.MyVi
             timeToReach = (TextView) v.findViewById(R.id.time);
             img1=(ImageView)v.findViewById(R.id.image);
             retail=(TextView)v.findViewById(R.id.retail);
-            if(retailersListArray.size()==0)
-            {
+            if(retailersListArray.size()==0) {
                 retail.setText("No RetailersList found near you");
             }
-
-
-
         }
-
-
     }
-
-
 }
