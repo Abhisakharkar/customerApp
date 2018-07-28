@@ -14,15 +14,18 @@ import com.example.chinmay.anew.R;
 import com.example.chinmay.anew.model.ProductDetail;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductCustomeAdapter>{
 
     private ArrayList<ProductDetail> productDetails;
     private Context context;
+    private HashMap<String,Integer> priceAndId;
 
-    public ProductAdapter(ArrayList<ProductDetail> productDetails, Context context) {
+    public ProductAdapter(ArrayList<ProductDetail> productDetails, Context context, HashMap<String,Integer> priceAndId) {
         this.productDetails = productDetails;
         this.context = context;
+        this.priceAndId = priceAndId;
     }
 
     @NonNull
@@ -34,7 +37,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductC
 
     @Override
     public void onBindViewHolder(@NonNull ProductCustomeAdapter holder, int position) {
-        holder.productPrice.setText(productDetails.get(position).getPrice());
+        int price = priceAndId.get(productDetails.get(position).getId());
+        holder.productPrice.setText(String.valueOf(price));
         holder.productName.setText(productDetails.get(position).getName());
         Glide.with(context).load("http://ec2-13-59-88-132.us-east-2.compute.amazonaws.com/magento/pub/media/catalog/product"+productDetails.get(position).getImage()).into(holder.productImg);
     }
