@@ -1,10 +1,12 @@
 <resources>
     <string name="app_name">new</string>
     <string name="app_description">TO buy all the item that you want</string>
-    <string name="locationURL">http://ec2-13-58-16-206.us-east-2.compute.amazonaws.com:6868/get_location_ids</string>
-    <string name="retailerURL">http://ec2-13-58-16-206.us-east-2.compute.amazonaws.com:6868/get_retailers_near_me</string>
-    <string name="photoURL">"http://ec2-13-59-88-132.us-east-2.compute.amazonaws.com/rt"</string>
+    <string name="locationURL">http://ec2-13-234-45-216.ap-south-1.compute.amazonaws.com:6868/get_location_ids</string>
+    <string name="retailerURL">http://ec2-13-234-45-216.ap-south-1.compute.amazonaws.com:6868/get_retailers_near_me</string>
+    <string name="photoURL">"http://ec2-13-234-45-216.ap-south-1.compute.amazonaws.com/rt"</string>
 
+
+ <!-- <string name="default_web_client_id">271506978165-imamffilo67uv1k3rgtm9f5ok9sbmble.apps.googleusercontent.com</string> -->
 
     <!--    XML String  -->
     <string name="createAnAccountStr">Create an account with the new phone number</string>

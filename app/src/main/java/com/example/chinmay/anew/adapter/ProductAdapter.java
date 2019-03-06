@@ -40,7 +40,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductC
         int price = priceAndId.get(productDetails.get(position).getId());
         holder.productPrice.setText(String.valueOf(price));
         holder.productName.setText(productDetails.get(position).getName());
-        Glide.with(context).load("http://ec2-13-59-88-132.us-east-2.compute.amazonaws.com/magento/pub/media/catalog/product"+productDetails.get(position).getImage()).into(holder.productImg);
+        Glide.with(context).load("http://ec2-13-234-45-216.ap-south-1.compute.amazonaws.com/magento/pub/media/catalog/product"+productDetails.get(position).getImage()).into(holder.productImg);
     }
 
     @Override

@@ -36,9 +36,9 @@ import java.util.Map;
 
 public class ServerOperation {
 
-    private String CategoriesUrl = "http://ec2-13-59-88-132.us-east-2.compute.amazonaws.com:6868/magento_get_categories";
-    private String RetailerDetailUrl = "http://ec2-13-59-88-132.us-east-2.compute.amazonaws.com:6868/get_details_and_product_of_retailer";
-    private String ProductDetailUrl = "http://ec2-13-59-88-132.us-east-2.compute.amazonaws.com:6868/magento_get_product_with_ids";
+    private String CategoriesUrl = "http://ec2-13-234-45-216.ap-south-1.compute.amazonaws.com:6868/magento_get_categories";
+    private String RetailerDetailUrl = "http://ec2-13-234-45-216.ap-south-1.compute.amazonaws.com:6868/get_details_and_product_of_retailer";
+    private String ProductDetailUrl = "http://ec2-13-234-45-216.ap-south-1.compute.amazonaws.com:6868/magento_get_product_with_ids";
 
     private String length,localityTier,localityId;
     private RequestQueue requestQueue;
@@ -52,10 +52,10 @@ public class ServerOperation {
     private HashMap params;
     private JSONObject locationParameters,retailerParameters;
     private Context context;
-    private String locationURL="http://ec2-13-59-88-132.us-east-2.compute.amazonaws.com:6868/get_location_ids";
-    private String RetailersURL="http://ec2-13-59-88-132.us-east-2.compute.amazonaws.com:6868/get_retailers_near_me";
+    private String locationURL="http://ec2-13-234-45-216.ap-south-1.compute.amazonaws.com:6868/get_location_ids";
+    private String RetailersURL="http://ec2-13-234-45-216.ap-south-1.compute.amazonaws.com:6868/get_retailers_near_me";
 
-    private String photoUrl="http://ec2-13-59-88-132.us-east-2.compute.amazonaws.com/magento/pub/media/catalog/product";
+    private String photoUrl="http://ec2-13-234-45-216.ap-south-1.compute.amazonaws.com/magento/pub/media/catalog/product";
 
     private String subLocality1Id;
 
